@@ -14,17 +14,24 @@ response = requests.get(api_url, headers={'X-Api-Key': f'{keys.API_Ninjas}'})
 if response.status_code != 200:
   print("Error: ", response.status_code, response.text)
 else:
+  print("QuoteAPI status: "+str(response.status_code))
   quote_json = response.json()
   quote = quote_json[0]['quote']
   author = quote_json[0]['author']
   category_data = quote_json[0]['category']
+  print("Quote has fetched from JSON response")
 
   # twitterbot
   authenticator = tweepy.OAuthHandler(keys.API_Key, keys.API_Key_Secret)
   authenticator.set_access_token(keys.Access_Token, keys.Access_Token_Secret)
   api = tweepy.API(authenticator, wait_on_rate_limit=True)
 
-  tweet = "#quoteoftheday"+" "+"#"+category_data+" "+quote+" - "+author
+  tweet = "#dailyquotes"+" "+"#"+category_data+" "+quote+" - "+author
+  print("Quote is added to the tweet")
+  print(tweet)
 
-  api.update_status(tweet)
-  print("Tweet posted")
+  try:
+    api.update_status(tweet)
+    print("Tweet posted")
+  except tweepy.Forbidden as e:
+    print(e)
