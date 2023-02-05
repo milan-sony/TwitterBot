@@ -1,5 +1,6 @@
 import requests
 import keys
+import tweepy
 
 categories = {'age', 'alone', 'amazing', 'anger', 'architecture', 'art', 'attitude', 'beautybest', 'birthday', 'business', 'car', 'change', 'communications', 'computers', 'cool', 'courage', 'dad', 'dating', 'death', 'design', 'dreams', 'education', 'environmental', 'equality', 'experience', 'failure', 'faith', 'family', 'famous', 'fear', 'fitness', 'food', 'forgiveness', 'freedom', 'friendship', 'funny', 'future', 'god', 'good', 'government', 'graduation', 'great', 'happiness', 'health', 'history', 'home', 'hope', 'humor', 'imagination', 'inspirational', 'intelligence', 'jealousy', 'knowledge', 'leadership', 'learning', 'legal', 'life', 'love', 'marriage', 'medical', 'men', 'mom', 'money', 'morning', 'movies', 'success'}
 
@@ -17,3 +18,13 @@ else:
   quote = quote_json[0]['quote']
   author = quote_json[0]['author']
   category_data = quote_json[0]['category']
+
+  # twitterbot
+  authenticator = tweepy.OAuthHandler(keys.API_Key, keys.API_Key_Secret)
+  authenticator.set_access_token(keys.Access_Token, keys.Access_Token_Secret)
+  api = tweepy.API(authenticator, wait_on_rate_limit=True)
+
+  tweet = "#quoteoftheday"+" "+"#"+category_data+" "+quote+" - "+author
+
+  api.update_status(tweet)
+  print("Tweet posted")
