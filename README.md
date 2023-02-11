@@ -1,3 +1,7 @@
+<p align="center">
+    <img width="100" src="icon/icon.png" alt="Icon">
+</p>
+
 # TwitterBot
 
 A bot🤖 that tweet quotes daily on Twitter <a href = "https://twitter.com/tweetwithquotes">tweetwithquotes</a>
