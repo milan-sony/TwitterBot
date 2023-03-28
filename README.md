@@ -8,9 +8,9 @@ A bot🤖 that tweet quotes daily on Twitter <a href = "https://twitter.com/twee
 
 ## Prerequisites
 
-Make an account on <a href = "https://api-ninjas.com/api/quotes">API Ninjas</a>
+<a href = "https://github.com/lukePeavey/quotable">Quote API</a>
 
-Make a twitter api <a href = "https://developer.twitter.com/en/docs/platform-overview">Twitter API</a>
+<a href = "https://developer.twitter.com/en/docs/platform-overview">Twitter API</a>
 
 For sending an Email, you have to make necessary changes in your gmail account (refer youtube, Keyword: How to send a mail in python)
 
@@ -28,7 +28,7 @@ For sending an Email, you have to make necessary changes in your gmail account (
 ## Run locally
 
 You will need to install Python on you system, head over to https://www.python.org/downloads/ to download python.
-(Dont Forget to tick Add Python to PATH while installing Python)
+(Dont Forget to tick `Add Python to PATH` while installing Python)
 
 Once you have downloaded Python on your system, 
 run the following command inside your terminal (only if your system is git enabled, otherwise download the zip file and extract it)
@@ -58,16 +58,10 @@ Activate the virtual environment
 If error occurs when activating virtual environment, run the following command
 
 ```bash
-  Set-ExecutionPolicy Unrestricted
-```
-
-or
-
-```bash
   Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted
 ```
 
-Install the dependencies needed for this project
+Then Install the dependencies needed for this project
 
 ```bash
   pip install -r requirements.txt
