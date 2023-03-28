@@ -9,69 +9,14 @@ import os
 def configure():
   load_dotenv()
 
-# function to get quotes from API Ninjas
-def getquotes():
-  configure()
-  categories = {'age', 'alone', 'amazing', 'anger', 'architecture', 'art', 'attitude', 'beautybest', 'birthday', 'business', 'car', 'change', 'communications', 'computers', 'cool', 'courage', 'dad', 'dating', 'death', 'design', 'dreams', 'education', 'environmental', 'equality', 'experience', 'failure', 'faith', 'family', 'famous', 'fear', 'fitness', 'food', 'forgiveness', 'freedom', 'friendship', 'funny', 'future', 'god', 'good', 'government', 'graduation', 'great', 'happiness', 'health', 'history', 'home', 'hope', 'humor', 'imagination', 'inspirational', 'intelligence', 'jealousy', 'knowledge', 'leadership', 'learning', 'legal', 'life', 'love', 'marriage', 'medical', 'men', 'mom', 'money', 'morning', 'movies', 'success'}
-  # In Python, list(s) is a built-in function that converts an iterable (e.g. a set, tuple, or string) to a list
-  categorylist = list(categories)
-  category = categorylist[0]
-
-  QuoteAPI_url = f'https://api.api-ninjas.com/v1/quotes?category={category}'
-  response = requests.get(QuoteAPI_url, headers={'X-Api-Key':os.getenv('API_Ninjas')})
-
-  if response.status_code != 200:
-    error_status = response.status_code, response.text
-    print("QuoteAPI authentication Failed")
-    print("Error: ",error_status)
-    error_message = "Something went wrong with the authentication of QuoteAPI. Error: "+str(error_status)
-    sendemail(error_message)
-  else:
-    print("QuoteAPI authentication is OK")
-    quote_json = response.json()
-    quote = quote_json[0]['quote']
-    author = quote_json[0]['author']
-    category_data = quote_json[0]['category']
-    print("Quote is fetched from JSON response")
-    return(category_data, quote, author)
-
-# function to tweet posts on twitter
-def posttweet():
-  configure()
-  category_data, quote, author = getquotes()
-  # Authenticate to Twitter
-  authenticator = tweepy.OAuthHandler(os.getenv('API_Key'), os.getenv('API_Key_Secret'))
-  authenticator.set_access_token(os.getenv('Access_Token'), os.getenv('Access_Token_Secret'))
-  #  credentials are tested using verify_credentials().
-  twitter_api_authenticate = tweepy.API(authenticator)
-  try:
-    twitter_api_authenticate.verify_credentials()
-    print("Twitter API authentication is OK")
-    tweet = "#dailyquotes"+" "+"#"+category_data+" "+quote+" - "+author
-    print("Quote is added to the tweet")
-    print(tweet)
-    # Create Twitter API object
-    api = tweepy.API(authenticator, wait_on_rate_limit=True)
-    try:
-      api.update_status(tweet)
-      print("Tweet posted")
-    except tweepy.Forbidden as e:
-      print(e)
-      error_msg = str(e)
-      sendemail(error_msg)
-  except:
-    print("Error: Twitter API Authentication Failed")
-    error_message = "Error: Twitter API Authentication Failed"
-    sendemail(error_message)
-
 # function to send Email
-def sendemail(message):
+def send_email(errormessage):
   configure()
   email_sender = os.getenv('email_sender')
   email_password = os.getenv('email_password')
   email_receiver = os.getenv('email_receiver')
   subject = '🚨 Alert from TwitterQuoteBot🤖'
-  email_content = str(message)
+  email_content = str(errormessage)
 
   em = EmailMessage()
   em['From'] = email_sender
@@ -87,5 +32,53 @@ def sendemail(message):
     print('Email Sent')
     exit()
 
-getquotes()
+
+def getquotes():
+  configure()
+  # Getting quote from the URL
+  quote_url = 'https://api.quotable.io/random'
+  response = requests.get(quote_url)
+
+  if response.status_code != 200 or response.status_code == 429:
+    error_status = response.status_code, response.text
+    print("Quote not found")
+    print("Error: ", error_status)
+    quote_error_message = "Quote not found "+str(error_status)
+    send_email(quote_error_message)
+  else:
+    print("Quote found")
+    quote_json = response.json()
+    quote = quote_json['content']
+    author = quote_json['author']
+    return(quote, author)
+
+# function to tweet posts on twitter
+def posttweet():
+  configure()
+  quote, author = getquotes()
+  # Authenticate to Twitter
+  authenticator = tweepy.OAuthHandler(os.getenv('API_Key'), os.getenv('API_Key_Secret'))
+  authenticator.set_access_token(os.getenv('Access_Token'), os.getenv('Access_Token_Secret'))
+  #  credentials are tested using verify_credentials().
+  twitter_api_authenticate = tweepy.API(authenticator)
+  try:
+    twitter_api_authenticate.verify_credentials()
+    print("Twitter API authentication is OK")
+    tweet = "#dailyquotes"+" "+quote+" - "+author
+    print("Quote is added to the tweet")
+    print(tweet)
+    # Create Twitter API object
+    api = tweepy.API(authenticator, wait_on_rate_limit=True)
+    try:
+      api.update_status(tweet)
+      print("Tweet posted")
+    except tweepy.Forbidden as e:
+      print(e)
+      error_msg = str(e)
+      send_email(error_msg)
+  except:
+    print("Error: Twitter API Authentication Failed")
+    error_message = "Error: Twitter API Authentication Failed"
+    send_email(error_message)
+
 posttweet()
