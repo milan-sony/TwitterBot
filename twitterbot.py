@@ -65,13 +65,13 @@ def posttweet():
     sendemail(error_message)
 
 # function to send Email
-def sendemail(errormessage):
+def sendemail(message):
   configure()
   email_sender = os.getenv('email_sender')
   email_password = os.getenv('email_password')
   email_receiver = os.getenv('email_receiver')
   subject = '🚨 Alert from TwitterQuoteBot🤖'
-  email_content = str(errormessage)
+  email_content = str(message)
 
   em = EmailMessage()
   em['From'] = email_sender
