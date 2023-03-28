@@ -77,7 +77,7 @@ Now run the script
 
 This bot works in such a way that
 
-1st it will send a request to the Quote API from <a href = "https://api-ninjas.com/api/quotes">API Ninjas</a> and it will get the JSON response back, then the quote is fetched from the JSON response and this response is posted on twitter. If any error messages occured or if the authentication from Quote API and twitter API failed, it will send an Email to the given Email Id.
+1st it will send a request to the Quote API and it will get the JSON response back, then the quote is fetched from the JSON response and this response is posted on twitter. If any error messages occured or if the authentication from Quote API and twitter API failed, it will send an Email to the given Email Id.
 
 ## Points to be noted
 
